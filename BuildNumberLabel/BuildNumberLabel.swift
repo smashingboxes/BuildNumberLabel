@@ -32,8 +32,8 @@ import Foundation
  */
 
 public func create(
-    font font: UIFont? = UIFont.systemFontOfSize(11.0),
-    color: UIColor = UIColor.blackColor(),
+    font: UIFont? = UIFont.systemFont(ofSize: 11.0),
+    color: UIColor = UIColor.black,
     padding: CGFloat = 10.0
     ) -> BuildLabel
 {
@@ -42,22 +42,22 @@ public func create(
     let items : [(name: String, value: String?)] = [
         (
             name: "version",
-            value:NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as? String? ?? nil
+            value:Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String? ?? nil
         ),
         (
             name: "build",
-            value: NSBundle.mainBundle().objectForInfoDictionaryKey(String(kCFBundleVersionKey)) as? String? ?? nil
+            value: Bundle.main.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String? ?? nil
         )
     ]
     
     let versionString = items.flatMap({ item in
         guard let value = item.value else { return nil }
         return "\(item.name) \(value)"
-    }).joinWithSeparator(" ")
+    }).joined(separator: " ")
     
     label.text = versionString
     label.font = font
-    label.backgroundColor = UIColor.clearColor()
+    label.backgroundColor = UIColor.clear
     label.textColor = color
     label.translatesAutoresizingMaskIntoConstraints = false
     label.sizeToFit()
@@ -66,30 +66,30 @@ public func create(
 }
 
 public enum VerticalEdge {
-    case Top, Bottom
-    private func layoutValue() -> NSLayoutAttribute {
+    case top, bottom
+    fileprivate func layoutValue() -> NSLayoutAttribute {
         switch (self) {
-        case .Top: return .Top
-        case .Bottom: return .Bottom
+        case .top: return .top
+        case .bottom: return .bottom
         }
     }
 }
 
 public enum HorizontalEdge {
-    case Left, Right
-    private func layoutValue() -> NSLayoutAttribute {
+    case left, right
+    fileprivate func layoutValue() -> NSLayoutAttribute {
         switch (self) {
-        case .Left: return .Left
-        case .Right: return .Right
+        case .left: return .left
+        case .right: return .right
         }
     }
 }
 
-public class BuildLabel : UILabel {
-    public func addToView(
-        view: UIView,
-        vertical: VerticalEdge = .Bottom,
-        horizontal: HorizontalEdge = .Left,
+open class BuildLabel : UILabel {
+    open func addToView(
+        _ view: UIView,
+        vertical: VerticalEdge = .bottom,
+        horizontal: HorizontalEdge = .left,
         horizontalPadding: CGFloat = 0.0,
         verticalPadding: CGFloat = 0.0)
     {
@@ -98,29 +98,29 @@ public class BuildLabel : UILabel {
         view.addConstraint(NSLayoutConstraint(
             item: self,
             attribute: vertical.layoutValue(),
-            relatedBy: .Equal,
+            relatedBy: .equal,
             toItem: view,
             attribute: vertical.layoutValue(),
             multiplier: 1.0,
-            constant: (vertical == .Top ? verticalPadding : -verticalPadding))
+            constant: (vertical == .top ? verticalPadding : -verticalPadding))
         )
         
         view.addConstraint(NSLayoutConstraint(
             item: self,
             attribute: horizontal.layoutValue(),
-            relatedBy: .Equal,
+            relatedBy: .equal,
             toItem: view,
             attribute: horizontal.layoutValue(),
             multiplier: 1.0,
-            constant: (horizontal == .Left ? horizontalPadding : -horizontalPadding))
+            constant: (horizontal == .left ? horizontalPadding : -horizontalPadding))
         )
         
         self.addConstraint(NSLayoutConstraint(
             item: self,
-            attribute: .Width,
-            relatedBy: .Equal,
+            attribute: .width,
+            relatedBy: .equal,
             toItem: nil,
-            attribute: .Width,
+            attribute: .width,
             multiplier: 1.0,
             constant: self.frame.size.width)
         )
