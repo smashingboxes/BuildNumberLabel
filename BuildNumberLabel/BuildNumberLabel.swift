@@ -34,7 +34,8 @@ import Foundation
 public func create(
     font: UIFont? = UIFont.systemFont(ofSize: 11.0),
     color: UIColor = UIColor.black,
-    padding: CGFloat = 10.0
+    padding: CGFloat = 10.0,
+    bundle: Bundle = Bundle.main
     ) -> BuildLabel
 {
     let label = BuildLabel()
@@ -42,15 +43,15 @@ public func create(
     let items : [(name: String, value: String?)] = [
         (
             name: "version",
-            value:Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String? ?? nil
+            value: bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String? ?? nil
         ),
         (
             name: "build",
-            value: Bundle.main.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String? ?? nil
+            value: bundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey)) as? String? ?? nil
         )
     ]
     
-    let versionString = items.flatMap({ item in
+    let versionString = items.compactMap({ item in
         guard let value = item.value else { return nil }
         return "\(item.name) \(value)"
     }).joined(separator: " ")
