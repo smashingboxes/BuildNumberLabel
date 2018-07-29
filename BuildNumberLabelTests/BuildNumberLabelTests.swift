@@ -11,16 +11,21 @@ import XCTest
 
 class BuildNumberLabelTests: XCTestCase {
     
+    var testBundle: Bundle {
+        let bundleId = "com.smashingboxes.BuildNumberLabelTests"
+        return Bundle.allBundles.first(where: { $0.bundleIdentifier == bundleId })!
+    }
+    
     func testVersionNumberInString() {
-        let version = NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString")
-        let label = BuildNumberLabel.create()
-        XCTAssertTrue(label.text!.containsString("\(version)"))
+        let version = testBundle.object(forInfoDictionaryKey: "CFBundleShortVersionString")
+        let label = BuildNumberLabel.create(bundle: testBundle)
+        XCTAssertTrue(label.text!.contains("\(version!)"))
     }
     
     func testBuildNumberInString() {
-        let build = NSBundle.mainBundle().objectForInfoDictionaryKey(String(kCFBundleVersionKey))
-        let label = BuildNumberLabel.create()
-        XCTAssertTrue(label.text!.containsString("\(build)"))
+        let build = testBundle.object(forInfoDictionaryKey: String(kCFBundleVersionKey))
+        let label = BuildNumberLabel.create(bundle: testBundle)
+        XCTAssertTrue(label.text!.contains("\(build!)"))
     }
     
     func testUsesFont() {
@@ -31,8 +36,8 @@ class BuildNumberLabelTests: XCTestCase {
     }
 
     func testUsesColor() {
-        let label = BuildNumberLabel.create(color: UIColor.redColor())
-        XCTAssertTrue(label.textColor.isEqual(UIColor.redColor()))
+        let label = BuildNumberLabel.create(color: UIColor.red)
+        XCTAssertTrue(label.textColor.isEqual(UIColor.red))
     }
 
 }
